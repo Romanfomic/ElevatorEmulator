@@ -27,12 +27,13 @@
                 isActive: false,
                 isResting: false,
                 floors: 5,
-                elQuery: []
+                elQuery: [],
             }
         },
         methods: {
             elCall(newPos) {
                 this.elQuery.push(this.floors + 1 - newPos);
+                this.$cookies.set('elQuery', JSON.stringify(this.elQuery))
             },
             elQueryHandler() {
                 if (this.isResting) return;
@@ -49,6 +50,7 @@
                     this.currentPos--;
                     this.direction = false;
                 }
+                this.$cookies.set('currentPos', this.currentPos);
                 if (newPos === this.currentPos) {
                     this.isActive = false;
                     this.isResting = true;
@@ -57,6 +59,7 @@
                     }, 3000)
                     this.elQuery.shift();
                 }
+                this.$cookies.set('elQuery', JSON.stringify(this.elQuery))
             },
             checkCurrentFloor(pos) {
                 if (this.currentPos === this.floors + 1 - pos) return true;
@@ -64,6 +67,12 @@
             }
         },
         mounted() {
+            if (this.$cookies.get('currentPos')) {
+                this.currentPos = parseInt(this.$cookies.get('currentPos'));
+            }
+            if (this.$cookies.get('elQuery')) {
+                this.elQuery = this.$cookies.get('elQuery');
+            }
             let timer = setInterval(() => this.elQueryHandler(), 1000);
         }
     }

@@ -11,7 +11,10 @@
                     </div>
                 </div>
                 <div class="position">{{ floors - position + 1 }}</div>
-                <button @click="elCall(position)" class="el-btn"></button>
+                <button @click="elCall(position)" class="el-btn"
+                        :class="{ 'current-btn': checkCurrentButton(position),
+                        'wait-btn': checkWaitButton(position) }"
+                ></button>
             </div>
             <hr/>
         </div>
@@ -63,6 +66,16 @@
             },
             checkCurrentFloor(pos) {
                 if (this.currentPos === this.floors + 1 - pos) return true;
+                return false;
+            },
+            checkCurrentButton(pos) {
+                if (this.elQuery[0] === this.floors + 1 - pos) return true;
+                return false;
+            },
+            checkWaitButton(pos) {
+                for (let i = 1; i < this.elQuery.length; i++) {
+                    if (this.elQuery[i] === this.floors + 1 - pos) return true;
+                }
                 return false;
             }
         },
@@ -123,5 +136,11 @@
     }
     .resting {
         background-color: grey;
+    }
+    .wait-btn {
+        background-color: orange;
+    }
+    .current-btn {
+        background-color: darkred;
     }
 </style>

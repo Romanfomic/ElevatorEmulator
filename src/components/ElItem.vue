@@ -2,8 +2,14 @@
     <div>
         <div class="shaft" v-for="position in floors">
             <div class="floor">
-                <div class="floor-shaft" :class="{ 'current-floor': currentPos === floors + 1 - position,
-                'resting' : isResting && (currentPos === floors + 1 - position) }"></div>
+                <div class="floor-shaft" :class="{ 'current-floor': checkCurrentFloor(position),
+                'resting' : isResting && checkCurrentFloor(position) }">
+                    <div class="state" v-if="isActive && checkCurrentFloor(position)">
+                        <div class="final-floor">{{ this.elQuery[0] }}</div>
+                        <img v-if="direction" height="20px" width="20px" src="@/assets/img/arrow_up.png">
+                        <img v-else height="20px" width="20px" src="@/assets/img/arrow_down.png">
+                    </div>
+                </div>
                 <div class="position">{{ floors - position + 1 }}</div>
                 <button @click="elCall(position)" class="el-btn"></button>
             </div>
@@ -16,8 +22,8 @@
     export default {
         data() {
             return{
+                direction: true,
                 currentPos: 1,
-                finalPos: 1,
                 isActive: false,
                 isResting: false,
                 floors: 5,
@@ -38,8 +44,10 @@
             goToFloor(newPos) {
                 if (newPos > this.currentPos) {
                     this.currentPos++;
+                    this.direction = true;
                 } else if (newPos < this.currentPos) {
                     this.currentPos--;
+                    this.direction = false;
                 }
                 if (newPos === this.currentPos) {
                     this.isActive = false;
@@ -50,6 +58,10 @@
                     this.elQuery.shift();
                 }
             },
+            checkCurrentFloor(pos) {
+                if (this.currentPos === this.floors + 1 - pos) return true;
+                return false;
+            }
         },
         mounted() {
             let timer = setInterval(() => this.elQueryHandler(), 1000);
@@ -66,8 +78,15 @@
         width: 40px;
         border-right: 1px solid black;
         border-left: 1px solid black;
-        margin: 0;
-        margin-left: 10px;
+        margin: 0 0 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     hr {
         margin: 0;

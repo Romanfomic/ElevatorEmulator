@@ -2,9 +2,10 @@
     <div>
         <div class="shaft" v-for="position in floors">
             <div class="floor">
-                <div class="floor-shaft" :class="{ 'current-floor': currentPos === floors + 1 - position }"></div>
+                <div class="floor-shaft" :class="{ 'current-floor': currentPos === floors + 1 - position,
+                'resting' : isResting && (currentPos === floors + 1 - position) }"></div>
                 <div class="position">{{ floors - position + 1 }}</div>
-                <button class="el-btn"></button>
+                <button @click="elCall(position)" class="el-btn"></button>
             </div>
             <hr/>
         </div>
@@ -16,11 +17,42 @@
         data() {
             return{
                 currentPos: 1,
+                finalPos: 1,
                 isActive: false,
                 isResting: false,
                 floors: 5,
                 elQuery: []
             }
+        },
+        methods: {
+            elCall(newPos) {
+                this.elQuery.push(this.floors + 1 - newPos);
+            },
+            elQueryHandler() {
+                if (this.isResting) return;
+                if (!this.elQuery[0] || this.currentPos === this.elQuery[0]) return;
+
+                this.isActive = true;
+                this.goToFloor(this.elQuery[0]);
+            },
+            goToFloor(newPos) {
+                if (newPos > this.currentPos) {
+                    this.currentPos++;
+                } else if (newPos < this.currentPos) {
+                    this.currentPos--;
+                }
+                if (newPos === this.currentPos) {
+                    this.isActive = false;
+                    this.isResting = true;
+                    setTimeout(() => {
+                        this.isResting = false;
+                    }, 3000)
+                    this.elQuery.shift();
+                }
+            },
+        },
+        mounted() {
+            let timer = setInterval(() => this.elQueryHandler(), 1000);
         }
     }
 </script>
@@ -60,5 +92,8 @@
     }
     .current-floor {
         background-color: dodgerblue;
+    }
+    .resting {
+        background-color: grey;
     }
 </style>

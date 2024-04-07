@@ -46,6 +46,7 @@
                 this.goToFloor(this.elQuery[0]);
             },
             goToFloor(newPos) {
+
                 if (newPos > this.currentPos) {
                     this.currentPos++;
                     this.direction = true;
@@ -133,6 +134,8 @@
     }
     .current-floor {
         background-color: dodgerblue;
+        animation-duration: 1s;
+        animation-name: isActiveAnim;
     }
     .resting {
         background-color: grey;
@@ -142,5 +145,14 @@
     }
     .current-btn {
         background-color: darkred;
+    }
+
+    @keyframes isActiveAnim {
+        0% {
+            opacity: 0;
+        }
+        100% {
+           opacity: 1;
+        }
     }
 </style>
